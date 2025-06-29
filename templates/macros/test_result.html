@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Test natijasi</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 80px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #4f46e5;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 20px;
+            margin: 25px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .result-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .result-card {
+            background-color: #f0f0ff;
+            border: 2px solid #4f46e5;
+            border-radius: 12px;
+            padding: 20px;
+            width: 45%;
+            margin: 10px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+
+        .result-card h3 {
+            color: #4f46e5;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .result-card p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background-color: #4f46e5;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #4338ca;
+        }
+
+        @media (max-width: 600px) {
+            .result-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Test natijasi</h1>
+
+    <div class="score">
+        Siz <strong>{{ total_questions }}</strong> ta savoldan<br>
+        <strong>{{ correct_answers }}</strong> tasiga to‘g‘ri javob berdingiz.<br>
+        <br>
+        Umumiy foiz: <strong>{{ score_percent }}%</strong><br>
+        Baho: <strong>{{ grade }}</strong>
+    </div>
+
+    <div class="result-summary">
+        <div class="result-card">
+            <h3>✅ To‘g‘ri</h3>
+            <p>{{ correct_answers }} ta</p>
+        </div>
+        <div class="result-card">
+            <h3>❌ Noto‘g‘ri</h3>
+            <p>{{ wrong_answers }} ta</p>
+        </div>
+    </div>
+
+    <a href="{% url 'test_list' %}" class="btn">🔁 Boshqa testga qaytish</a>
+</div>
+
+</body>
+</html>

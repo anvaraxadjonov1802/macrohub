@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/mavzu.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+</head>
+
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+
+        <!-- Content -->
+       <div class="content">
+            <!-- Back link -->
+            <div class="back-nav">
+                <a href="{% url 'video_qism' %}" class="back-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5"></path>
+                        <path d="M12 19l-7-7 7-7"></path>
+                    </svg>
+                    Barcha media darslar
+                </a>
+            </div>
+            <!-- Header -->
+            <div class="lesson-header">
+                <h1 class="lesson-title">{{ video.title }}</h1>
+                <p class="lesson-subtitle">{{ video.task_description }}</p>
+            </div>
+
+            <!-- Video qo‘llanma -->
+            {% if video.video_url %}
+            <div class="content-section">
+                <div class="section-header">
+                    <span class="section-icon">🎬</span>
+                    <h2 class="section-title">Video ko‘rsatma</h2>
+                </div>
+                <div class="section-content">
+                    <img src="{% static 'images/macros/preview.png' %}"
+                         alt="{{ video.title }}"
+                         class="video-thumbnail"
+                         onclick="playVideo(this)"
+                         data-embed-url="{{ video.get_embed_url }}" width="100%" height="600">
+                    <iframe width="100%" height="600"
+                            class="video-frame"
+                            style="display: none; border-radius: 8px;"
+                            frameborder="0"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            {%endif%}
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Copy code functionality
+    function copyCode() {
+        const codeContent = document.getElementById('codeContent').textContent;
+        navigator.clipboard.writeText(codeContent).then(() => {
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Nusxalandi
+                `;
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        });
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+</script>
+<script>
+    function playVideo(thumbnail) {
+        const embedUrl = thumbnail.getAttribute('data-embed-url');
+        const container = thumbnail.parentElement;
+        const iframe = container.querySelector('.video-frame');
+
+        thumbnail.style.display = 'none'; // rasmni yashirish
+        iframe.src = embedUrl;
+        iframe.style.display = 'block'; // iframe ko‘rsatish
+    }
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+</script>
+</body>
+
+</html>

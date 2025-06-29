@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/account/name.css' %}">
+</head>
+
+<body>
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="left">
+                <div class="form">
+                    <h1>Ro'yxatdan o'tish</h1>
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="first_name">Ism</label>
+                        <input required type="text" name="first_name" id="first_name" placeholder="Ismingizni yozing">
+                        <label for="last_name">Familiya</label>
+                        <input required type="text" name="last_name" id="last_name" placeholder="Familiyangizni yozing">
+
+                        <button type='submit'>Davom etish</button>
+                    </form>
+                </div>
+            </div>
+            <div class="right">
+                <img src="{% static 'images/account/banner_login.png' %}" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+</script>
+
+
+
+</html>

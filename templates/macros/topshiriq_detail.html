@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+    <style>
+        .container2 {
+            max-width: 700px;
+            width: 100%;
+            margin: 30px auto; /* faqat gorizontal markazga qo‘yish */
+            background-color: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .desc {
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .download {
+            display: inline-block;
+            margin-bottom: 20px;
+            background-color: #e0e7ff;
+            color: #1e3a8a;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+
+
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+
+        <!-- Content -->
+        <div class="container2">
+            <h1>📄 {{topshiriq.title}}</h1>
+            <p class="desc">{{topshiriq.description}}</p>
+            {% if topshiriq.deadline %}
+            <p class="info">🕓 Muddati: {{topshiriq.deadline}}</p>
+            {% else %}
+            <p class="info">🕓 Muddati: ♾&#8734;</p>
+            {% endif %}
+            {% if topshiriq.example_file %}
+            <a href="#" class="download">📎 Namuna faylni yuklab olish</a>
+            {% endif %}
+            <hr style="margin: 30px 0;">
+            {% if submission %}
+            <p>Status: <strong>{{ submission.get_status_display }}</strong></p>
+            {% if submission.status == 'rejected' %}
+            <!-- Qayta yuborish formasi -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="solution_file" required>
+                <textarea name="comment" rows="4" placeholder="Izoh qoldiring (ixtiyoriy)"></textarea>
+                <button type="submit">Yuborish</button>
+            </form>
+            {% else %}
+            <p>Bu topshiriq allaqachon yuborilgan.</p>
+            {% endif %}
+            {% else %}
+            <!-- Birinchi marta yuborayotgan foydalanuvchi uchun forma -->
+            <h2>📤 Yechimingizni yuboring:</h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="solution_file" required>
+                <textarea name="comment" rows="4" placeholder="Izoh qoldiring (ixtiyoriy)"></textarea>
+                <button type="submit">Yuborish</button>
+            </form>
+            {% endif %}
+
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+
+</script>
+</body>
+
+</html>

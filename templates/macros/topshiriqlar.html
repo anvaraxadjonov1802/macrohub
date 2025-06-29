@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+    <style>
+        .container2 {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .container2 h1 {
+            color: #4f46e5;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-left: 5px solid #4f46e5;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #4f46e5;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 14px;
+            background-color: #4f46e5;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #4338ca;
+        }
+    </style>
+</head>
+
+
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+
+        <!-- Content -->
+        <div class="container2">
+            <h1>📌 Topshiriqlar</h1>
+
+            <div class="card-grid">
+                <!-- Har bir topshiriq uchun card -->
+                {% for topshiriq in topshiriqlar %}
+                <div class="card">
+                    <h3>{{topshiriq.id}}. {{topshiriq.title}}</h3>
+                    <p>{{topshiriq.description}}</p>
+                    <a href="{% url 'topshiriq_detail' topshiriq.id %}" class="btn">Batafsil →</a>
+                </div>
+                {% endfor %}
+                <!-- Yana topshiriqlar -->
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+
+</script>
+</body>
+
+</html>

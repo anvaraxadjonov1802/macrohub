@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+    <style>
+        .test .container2 {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .test h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .question-card {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .option {
+            display: block;
+            background: #f9f9f9;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option:hover {
+            background: #eef4ff;
+        }
+
+        .option:has(input:checked) {
+            border-color: #007bff;
+            background: #e8f0ff;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+
+    </style>
+</head>
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Hero Section -->
+
+            <!-- Video Courses Section -->
+            <section class="test">
+                <div class="container2">
+                    <h1 style="display: block">🧪 {{ modul.name }} Testi</h1>
+
+                    <form method="post" style="display: block">
+                        {% csrf_token %}
+                        {% for savol in savollar %}
+                        <div class="question-card">
+                            <div class="question-text">{{ forloop.counter }}. {{ savol.question }}</div>
+
+                            <label class="option">
+                                <input type="radio" name="savol_{{ savol.id }}" value="A" required>
+                                A) {{ savol.option_a }}
+                            </label>
+
+                            <label class="option">
+                                <input type="radio" name="savol_{{ savol.id }}" value="B">
+                                B) {{ savol.option_b }}
+                            </label>
+
+                            <label class="option">
+                                <input type="radio" name="savol_{{ savol.id }}" value="C">
+                                C) {{ savol.option_c }}
+                            </label>
+
+                            <label class="option">
+                                <input type="radio" name="savol_{{ savol.id }}" value="D">
+                                D) {{ savol.option_d }}
+                            </label>
+                        </div>
+                        {% endfor %}
+
+                        <button type="submit" class="submit-btn">✅ Javoblarni Yuborish</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+<script>
+    window.addEventListener("load", function () {
+        const toast = document.getElementById("toast-no-tests");
+        if (toast) {
+            // 1.5 soniya kutamiz, keyin ko‘rsatamiz
+            setTimeout(() => {
+                toast.style.opacity = "1";
+                toast.style.transform = "translateY(0)";
+            }, 1500); // 1500 ms = 1.5 soniya
+
+            // 6.5 soniyada (1.5 + 5) keyin yo‘qoladi
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(20px)";
+                setTimeout(() => toast.remove(), 500);
+            }, 5500);
+        }
+    });
+</script>
+
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+
+</script>
+</body>
+
+</html>

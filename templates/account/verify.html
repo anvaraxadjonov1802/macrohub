@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/account/verify.css' %}">
+</head>
+
+<body>
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="left">
+                <div class="form">
+                    <h1>Pochtani tasdiqlash</h1>
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="password1">Tasdiqlash kodi</label>
+                        <input required type="text" name="code" id="code" placeholder="123456" pattern="\d{6}" inputmode="numeric" autocomplete="one-time-code" required aria-required="true">
+
+                        <button type='submit'>Tasdiqlash</button>
+                    </form>
+                </div>
+            </div>
+            <div class="right">
+                <img src="{% static 'images/account/banner_login.png' %}" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+</script>
+<script>
+    const codeInput = document.getElementById("code");
+
+    const errorMsg = document.createElement("div");
+    errorMsg.style.color = "red";
+    errorMsg.style.fontSize = "0.875rem";
+    errorMsg.style.marginTop = "5px";
+    codeInput.parentNode.insertBefore(errorMsg, codeInput.nextSibling);
+
+    codeInput.addEventListener("input", function () {
+        const code = codeInput.value;
+        if (!/^\d{6}$/.test(code)) {
+            errorMsg.textContent = "Iltimos, 6 xonali raqamli kod kiriting.";
+        } else {
+            errorMsg.textContent = "";
+        }
+    });
+
+    // Formani yuborishda ham tekshiramiz
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const code = codeInput.value;
+        if (!/^\d{6}$/.test(code)) {
+            e.preventDefault();
+            errorMsg.textContent = "To‘g‘ri 6 xonali kod kiriting.";
+        }
+    });
+</script>
+
+
+
+
+</html>

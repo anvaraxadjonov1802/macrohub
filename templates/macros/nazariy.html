@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+</head>
+
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+        <!-- Content -->
+        <div class="content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">Nazariy Ma’lumotlar</h1>
+                    <p class="hero-description">
+                        Makros haqida barcha nazariy bilimlar bir joyda — asoslardan to ilg‘or tushunchalargacha.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'mavzu_detail' 1 %}" class="btn btn-primary">Boshlash</a>
+                        <a href="{% url 'video_qism' %}" class="btn btn-secondary">Videolar</a>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <svg class="react-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5">
+                        <circle cx="12" cy="12" r="2"/>
+                        <path
+                                d="M12 1a11 11 0 0 0-11 11 11 11 0 0 0 11 11 11 11 0 0 0 11-11A11 11 0 0 0 12 1zm0 19a8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8 8 8 0 0 1-8 8z"/>
+                        <path d="M8 12a4 4 0 0 1 4-4 4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4z"/>
+                        <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                        <path
+                                d="M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Video Courses Section -->
+            <section>
+                {% for modul in modullar %}
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-title-icon">{{ modul.id }}</i></span>
+                        {{ modul.title }}
+                    </h2>
+                </div>
+                <div class="ag-format-container vide-grid">
+                    <div class="ag-courses_box">
+                        {% for mavzu in modul.mavzular_set.all %}
+                        <div class="ag-courses_item">
+                            <a href="{% url 'mavzu_detail' mavzu.id %}" class="ag-courses-item_link">
+                                <div class="ag-courses-item_bg"></div>
+
+                                <div class="ag-courses-item_title">
+                                    {{ mavzu.title }}
+                                </div>
+
+                                <div class="ag-courses-item_date-box">
+                                        <span class="ag-courses-item_date">
+                                            {{ modul.id }}.{{ mavzu.order }}-dars
+                                        </span>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+</script>
+</body>
+
+</html>

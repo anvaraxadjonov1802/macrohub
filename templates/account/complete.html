@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="3;url={% url 'register_email' %}" />
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/account/complete.css' %}">
+</head>
+
+<body>
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="left">
+                <div class="form">
+                    <img src="{% static 'images/account/result_suc.svg' %}" alt="">
+                    <br>
+                    <h1>Ro’yxatdan muvaffaqiyatli o’tdingiz</h1>
+                    <p>Itimos ro’yxatdan o’tilgandagi ma’lumotlarni yaxshilab eslab qoling yoki biror joyga yozib qo’ying.</p>
+                    <button type='submit'>Asosiy sahifaga o'tish</button>
+
+                </div>
+            </div>
+            <!-- <div class="right">
+                <img src="images/banner_login.png" alt="">
+            </div> -->
+        </div>
+    </div>
+</body>
+<script>
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+</script>
+
+
+
+</html>

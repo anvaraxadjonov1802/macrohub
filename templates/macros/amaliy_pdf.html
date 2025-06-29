@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing;
+            border-box;
+        }
+
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            padding: 30px;
+            font-size: 12pt;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 18pt;
+        }
+
+        h2 {
+            color: #2980b9;
+            font-size: 14pt;
+            margin-top: 20px;
+        }
+
+        p, pre {
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<h1>{{ mavzu.title }}</h1>
+
+<h2>📝 Vazifa tavsifi</h2>
+<p>{{ mavzu.task_description }}</p>
+
+<h2>🧭 Bosqichma-bosqich ko‘rsatma</h2>
+{% for sentence in mavzu.step_guide_list %}
+<p>{{ sentence }}.</p>
+{% endfor %}
+
+{% if mavzu.code_example %}
+<h2>💻 Kod namunasi</h2>
+<pre>{{ mavzu.code_example }}</pre>
+{% endif %}
+
+{% if mavzu.explanation %}
+<h2>ℹ️ Qo‘shimcha tushuntirish</h2>
+<p>{{ mavzu.explanation }}</p>
+{% endif %}
+
+<p style="margin-top: 30px;">📅 Yaratilgan: {{ mavzu.created_at|date:"d-m-Y" }}</p>
+</body>
+</html>

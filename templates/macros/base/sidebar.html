@@ -1,0 +1,58 @@
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="sidebar-logo">
+            <div class="sidebar-logo-icon">MS</div>
+            <span class="sidebar-logo-text">Macros</span>
+        </a>
+    </div>
+
+    <div class="sidebar-content">
+        <div class="sidebar-section">
+            <h2 class="sidebar-title">Sahifalar</h2>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-house"></i></span>
+                        <span class="sidebar-text">Bosh sahifa</span>
+<!--                        <span class="tooltip">Bosh sahifa</span>-->
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'nazariy_qisim' %}" class="{% if request.resolver_match.url_name == 'nazariy_qisim' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-brain"></i></span>
+                        <span class="sidebar-text">Nazariy</span>
+<!--                        <span class="tooltip">Nazariy</span>-->
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'amaliy_qisim' %}" class="{% if request.resolver_match.url_name == 'amaliy_qisim' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-shapes"></i></span>
+                        <span class="sidebar-text">Amaliy</span>
+<!--                        <span class="tooltip">Amaliy</span>-->
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'video_qism' %}" class="{% if request.resolver_match.url_name == 'video_qism' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-circle-play"></i></span>
+                        <span class="sidebar-text">Media</span>
+<!--                        <span class="tooltip">Media</span>-->
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'test_list' %}" class="{% if request.resolver_match.url_name == 'test_list' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-file-pen"></i></span>
+                        <span class="sidebar-text">Testlar</span>
+<!--                        <span class="tooltip">Testlar</span>-->
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'topshiriq_list' %}" class="{% if request.resolver_match.url_name == 'topshiriq_list' %}active{% endif %}">
+                        <span class="sidebar-icon"><i class="fa-solid fa-list-check"></i></span>
+                        <span class="sidebar-text">Topshiriqlar</span>
+<!--                        <span class="tooltip">Topshiriqlar</span>-->
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</aside>

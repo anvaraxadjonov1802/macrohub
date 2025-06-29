@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="uz">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS | Macros</title>
+    <link rel="stylesheet" href="{% static 'css/macros/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css  ">
+</head>
+
+<body>
+{% include 'macros/base/loader.html' %}
+<div class="container">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    {% include 'macros/base/sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        {% include 'macros/base/header.html' %}
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">MS Macros - darslari</h1>
+                    <p class="hero-description">
+                        MS | Macros - bu sizga Microsoft Office Makroslarini o'rganishda yordam beradigan platforma.
+                        Pullik darslardagi ma'lumotlarni bepul olishingiz mumkin. Barchasi bir joyda!
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'nazariy_qisim' %}" class="btn btn-primary">Boshlash</a>
+                        <a href="{% url 'video_qism' %}" class="btn btn-secondary">Videolar</a>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <svg class="react-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5">
+                        <circle cx="12" cy="12" r="2"/>
+                        <path
+                                d="M12 1a11 11 0 0 0-11 11 11 11 0 0 0 11 11 11 11 0 0 0 11-11A11 11 0 0 0 12 1zm0 19a8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8 8 8 0 0 1-8 8z"/>
+                        <path d="M8 12a4 4 0 0 1 4-4 4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4z"/>
+                        <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                        <path
+                                d="M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Video Courses Section -->
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-title-icon"><i class="fa-solid fa-video"></i></span>
+                        Videolar
+                    </h2>
+                </div>
+
+                <div class="video-grid">
+                    <!-- Video Card 1: Webpack -->
+
+                    {% for modul in modullar %}
+                    {% for video in mavzular|slice:":3" %}
+                    {% if video.video_url %}
+                    {% if video.modul.id == modul.id %}
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <img src="{% static 'images/macros/preview.png' %}" alt="">
+                            <div class="video-duration">{{ video.video_duration }}</div>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="video-title">{{modul.id}}.{{video.order}}-dars<br>{{ video.title }}</h3>
+                            <div class="video-meta">
+                                <span class="video-author">{{modul.name}}</span>
+                            </div>
+
+                        </div>
+                        <div class="video-footer">
+                                                        <div class="video-tags">
+                                                            <span class="video-tag">MS | Macros</span>
+                                                        </div>
+                            <a href="{% url 'video_detail' video.id %}" class="video-action">
+                                Ko'rish
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+
+
+                </div>
+            </section>
+            <!-- Projects Section -->
+            <!--                <section>-->
+            <!--                    <div class="section-header">-->
+            <!--                        <h2 class="section-title">-->
+            <!--                            <span class="section-title-icon">📁</span>-->
+            <!--                            Loyihalar-->
+            <!--                        </h2>-->
+            <!--                        <div class="section-actions">-->
+            <!--                            <button class="section-action-btn">-->
+            <!--                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+            <!--                                    stroke-width="2">-->
+            <!--                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>-->
+            <!--                                    <polyline points="7 10 12 15 17 10"></polyline>-->
+            <!--                                    <line x1="12" y1="15" x2="12" y2="3"></line>-->
+            <!--                                </svg>-->
+            <!--                            </button>-->
+            <!--                            <button class="section-action-btn">-->
+            <!--                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+            <!--                                    stroke-width="2">-->
+            <!--                                    <circle cx="11" cy="11" r="8"></circle>-->
+            <!--                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>-->
+            <!--                                </svg>-->
+            <!--                            </button>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+
+            <!--                    <div class="projects-grid">-->
+            <!--                        <div class="project-placeholder">-->
+            <!--                            <div class="project-placeholder-icon">-->
+            <!--                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+            <!--                                    stroke-width="2">-->
+            <!--                                    <path-->
+            <!--                                        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">-->
+            <!--                                    </path>-->
+            <!--                                </svg>-->
+            <!--                            </div>-->
+            <!--                            <span>Loyihalar tez orada...</span>-->
+            <!--                        </div>-->
+            <!--                        <div class="project-placeholder">-->
+            <!--                            <div class="project-placeholder-icon">-->
+            <!--                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+            <!--                                    stroke-width="2">-->
+            <!--                                    <polygon-->
+            <!--                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">-->
+            <!--                                    </polygon>-->
+            <!--                                </svg>-->
+            <!--                            </div>-->
+            <!--                            <span>Loyihalar tez orada...</span>-->
+            <!--                        </div>-->
+            <!--                        <div class="project-placeholder">-->
+            <!--                            <div class="project-placeholder-icon">-->
+            <!--                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+            <!--                                    stroke-width="2">-->
+            <!--                                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>-->
+            <!--                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>-->
+            <!--                                    <path d="M2 2l7.586 7.586"></path>-->
+            <!--                                    <circle cx="11" cy="11" r="2"></circle>-->
+            <!--                                </svg>-->
+            <!--                            </div>-->
+            <!--                            <span>Loyihalar tez orada...</span>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </section>-->
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    let isCollapsed = false;
+    let isMobile = window.innerWidth <= 768;
+
+    // Check if mobile
+    function checkMobile() {
+        const wasMobile = isMobile;
+        isMobile = window.innerWidth <= 768;
+
+        if (isMobile && !wasMobile) {
+            // Switching to mobile
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('collapsed');
+            sidebarToggleBtn.classList.remove('collapsed');
+            sidebarOverlay.classList.remove('active');
+        } else if (!isMobile && wasMobile) {
+            // Switching to desktop
+            sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            sidebarOverlay.classList.remove('active');
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+                sidebarToggleBtn.classList.add('collapsed');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        if (isMobile) {
+            // Mobile behavior - slide in/out
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                sidebarOverlay.classList.add('active');
+            }
+        } else {
+            // Desktop behavior - collapse/expand
+            isCollapsed = !isCollapsed;
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            sidebarToggleBtn.classList.toggle('collapsed');
+
+            // Save state
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+    }
+
+    // Event listeners
+    sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', () => {
+        if (isMobile) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', checkMobile);
+
+    // Load saved state
+    window.addEventListener('load', () => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true' && !isMobile) {
+            isCollapsed = true;
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            sidebarToggleBtn.classList.add('collapsed');
+        }
+        checkMobile();
+    });
+
+    // Close mobile menu when clicking nav links
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (isMobile) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+            }
+        });
+    });
+
+    // Keyboard shortcut for sidebar toggle (Ctrl/Cmd + B)
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
+    });
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("fade-out");
+            setTimeout(() => {
+                loader.style.display = "none";
+            }, 500); // transition tugashini kutadi
+        }, 500); // loader 1 soniya ko‘rinadi
+    });
+
+</script>
+</body>
+
+</html>
